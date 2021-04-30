@@ -8,6 +8,8 @@ const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port);
 
+/////////////////////////////////////////////////////////////////
+// 배포 전용 추가 코드
 // path 모듈 불러오기
 const path = require('path');
 
@@ -18,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
+/////////////////////////////////////////////////////////////////
 
 // 미들웨어 함수를 특정 경로에 등록
 app.use("/api/data", async function (req, res) {

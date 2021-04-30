@@ -20,7 +20,7 @@ Puppeteer는 다양한 기능을 가지고 있으며 아래와 같은 기능들�
 
 결과물은 위 링크에서 확인할 수 있다. 검색창에 키워드를 입력해 검색버튼을 누르면 내부에선 요청값을 서버로 보내고 서버에선 Puppeteer로 구글로 이동해서 검색 결과를 각 페이지마다 크롤링해서 클라이언트로 보내 화면에 출력하게 된다. 깃 저장소는 [https://github.com/recordboy/scrap-sample](https://github.com/recordboy/scrap-sample)에서 확인할 수 있다.
 
-> 위 사이트는 헤로쿠에 배포되었기 때문에 처음 사이트가 열릴때 로딩시간이 길수 있다.
+> 위 사이트는 헤로쿠에 배포되었기 때문에 처음 사이트가 열릴때 로딩시간이 10초에서 30초정도  있다.
 
 # 프로젝트 초기화
 이 부분은 [[Express] Express + React 연동 및 Heroku에 배포하기](https://recordboy.github.io/2020/11/05/express-react-heroku-init/) 포스팅과 비슷한 부분이 많기 때문에 각 단계의 추가 설명 없이 진행하도록 하겠다.

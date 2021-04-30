@@ -1,24 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import SearchForm from "./components/SearchForm";
+import SearchLoading from "./components/SearchLoading";
+import SearchList from "./components/SearchList";
+import "./App.css";
 
 function App() {
+  const [searchData, setSearchData] = useState<any>([]);
+  const [isOnLoading, setIsOnLoading] = useState(false);
+  const getData = (keyword: string) => {
+    setIsOnLoading(true);
+    console.log("검색 키워드: " + keyword);
+    fetch(`api/data?keyword=${keyword}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setSearchData(data);
+        setIsOnLoading(false);
+        console.log(data);
+      });
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <SearchForm getData={getData} isOnLoading={isOnLoading} />
+      <SearchLoading isOnLoading={isOnLoading} />
+      <SearchList searchData={searchData} isOnLoading={isOnLoading} />
     </div>
   );
 }

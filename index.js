@@ -42,7 +42,14 @@ async function openBrowser(keyword) {
   let searchAllData = [];
 
   // 브라우저 실행 및 옵션, 현재 옵션은 headless 모드 사용 여부
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ 
+    headless: true,
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--window-size=1600,2000",
+    ]
+  });
 
   // 브라우저 열기
   const page = await browser.newPage();

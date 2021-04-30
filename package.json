@@ -1,0 +1,29 @@
+{
+  "name": "scrap-sample",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm start",
+    "dev:client": "cd client && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/recordboy/scrap-sample.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/recordboy/scrap-sample/issues"
+  },
+  "homepage": "https://github.com/recordboy/scrap-sample#readme",
+  "dependencies": {
+    "concurrently": "^6.0.2",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7"
+  }
+}

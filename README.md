@@ -1,25 +1,4 @@
----
-title: "[Express] Puppeteer, React, Express를 활용해 크롤러 만들기 및 Heroku에 배포하기"
-date: 2021-04-30 17:14:49
-categories: [server, express]
-tags: [express, react, heroku, web crawling, typescript]
-# thumbnail: "/gallery/thumbnail-js.png"
-toc: true
-widgets:
-  - type: toc
-    position: left
-  - type: categories
-    position: left
-  - type: tags
-    position: left
-sidebar:
-  left:
-    sticky: true
----
-
-이번 포스팅에서는 Puppeteer를 활용해 구글의 검색결과를 크롤링 하는 웹페이지를 만들어 보겠다. 클라이언트는 React, 서버는 Express를 사용할것이다. 로컬에서 작업이 끝나면 Heroku에 배포까지 해보자. 
-
-<!-- more -->
+이번 포스팅에서는 Puppeteer를 활용해 구글의 검색결과를 크롤링 하는 웹페이지를 만들어 보겠다. 클라이언트는 React, 서버는 Express를 사용할것이다. 로컬에서 작업이 끝나면 Heroku에 배포까지 해보자.
 
 # Puppeteer
 Puppeteer는 Google Chrome 개발팀에서 직접 개발한 Chrome(혹은 Chromium) 렌더링 엔진을 이용하는 node.js 라이브러리이다. Puppeteer는 headless 모드를 지원하며, 이는 브라우저를 띄우지 않고 렌더링 작업을 가상으로 진행하고 실제 브라우저와 동일하게 동작한다.
@@ -39,7 +18,7 @@ Puppeteer는 다양한 기능을 가지고 있으며 아래와 같은 기능들�
 ## 결과물 미리보기
 ### [https://recordboy-scrap-sample.herokuapp.com/](https://recordboy-scrap-sample.herokuapp.com/)
 
-결과물은 위 링크에서 확인할 수 있다. 검색창에 키워드를 입력해 검색버튼을 누르면 내부에선 요청값을 서버로 보내고 서버에선 Puppeteer로 구글로 이동해서 검색 결과를 각 페이지마다 크롤링해서 클라이언트로 보내 화면에 출력하게 된다.
+결과물은 위 링크에서 확인할 수 있다. 검색창에 키워드를 입력해 검색버튼을 누르면 내부에선 요청값을 서버로 보내고 서버에선 Puppeteer로 구글로 이동해서 검색 결과를 각 페이지마다 크롤링해서 클라이언트로 보내 화면에 출력하게 된다. 깃 저장소는 [https://github.com/recordboy/scrap-sample](https://github.com/recordboy/scrap-sample)에서 확인할 수 있다.
 
 > 위 사이트는 헤로쿠에 배포되었기 때문에 처음 사이트가 열릴때 로딩시간이 길수 있다.
 
@@ -50,17 +29,17 @@ Puppeteer는 다양한 기능을 가지고 있으며 아래와 같은 기능들�
 
 디렉토리를 생성하고 이그노 파일을 생성한 뒤 npm 초기화 및 필요한 모듈을 설치한다.
 
-{% codeblock TERMINAL %}
+```
 $ mkdir my-app
 $ cd my-app 
 $ echo node_modules > .gitignore
 $ npm init -y
 $ npm install express nodemon concurrently
-{% endcodeblock %}
+```
 
 이제 서버로 사용할 `index.js` 파일을 생성하고 아래 내용을 입력한다.
 
-{% codeblock lang:javascript index.js %}
+```javascript
 // express 모듈 불러오기
 const express = require("express");
 
@@ -77,34 +56,34 @@ app.use("/api/data", function (req, res) {
 });
 
 console.log(`server running at http ${port}`);
-{% endcodeblock %}
+```
 
 `package.json` 파일을 열고 `scripts` 항목에 `"start": "nodemon index.js"`를 추가한다.
 
-{% codeblock lang:javascript package.json %}
+```json
 "scripts": {
   "start": "nodemon index.js"
 }
-{% endcodeblock %}
+```
 
 ## 리액트 초기화
 이제 클라이언트로 사용할 리액트를 생성하며, 이름은 `client`로 한다.
 
-{% codeblock TERMINAL %}
+```
 $ create-react-app client --use-npm --template typescript
-{% endcodeblock %}
+```
 
 ## 프록시 설정
 설치가 완료되면 `client` 디렉토리로 이동해서에 아래 모듈을 설치한다.
 
-{% codeblock TERMINAL %}
+```
 $ cd client
 $ npm install http-proxy-middleware
-{% endcodeblock %}
+```
 
 설치한 뒤 `/client/src/` 디렉토리로 가서 `setupProxy.js` 파일을 생성하고 아래 코드를 입력해준다.
 
-{% codeblock lang:javascript setupProxy.js %}
+```javascript
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 module.exports = function (app) {
@@ -115,25 +94,25 @@ module.exports = function (app) {
     })
   );
 };
-{% endcodeblock %}
+```
 
 ## 서버(express), 클라이언트(react) 동시 시작 설정
 루트로 가서 `package.json`의 `scripts`항목을 아래처럼 수정해준다.
 
-{% codeblock lang:javascript package.json %}
+```json
 "scripts": {
   "start": "nodemon index.js",
   "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
   "dev:server": "npm start",
   "dev:client": "cd client && npm start"
 }
-{% endcodeblock %}
+```
 
 이제 아래 명령어로 서버와 클라이언트를 동시에 시작할 수 있다.
 
-{% codeblock TERMINAL %}
+```
 $ npm run dev
-{% endcodeblock %}
+```
 
 이제 작업하기 위한 전반적인 준비가 끝났다. 우선 클라이언트 영역부터 작업해보자.
 
@@ -143,7 +122,7 @@ $ npm run dev
 `/client/src/` 디렉토리에 `components` 폴더를 생성하고 `SearchForm.tsx`, `SearchList.tsx` 파일을 생성하고 각각 아래처럼 입력해 준다.
 
 **SearchForm.tsx**
-{% codeblock lang:javascript SearchForm.tsx %}
+```javascript
 import React from "react";
 
 const SearchForm = () => {
@@ -170,10 +149,10 @@ const SearchForm = () => {
 };
 
 export default SearchForm;
-{% endcodeblock %}
+```
 
 **SearchList.tsx**
-{% codeblock lang:javascript SearchList.tsx %}
+```javascript
 import React from "react";
 
 const SearchList = () => {
@@ -183,11 +162,11 @@ const SearchList = () => {
 };
 
 export default SearchList;
-{% endcodeblock %}
+```
 
 `App.tsx`은 아래처럼 변경해준다.
 
-{% codeblock lang:javascript App.tsx %}
+```javascript
 import React from "react";
 import SearchForm from "./components/SearchForm";
 import SearchList from "./components/SearchList";
@@ -202,7 +181,7 @@ function App() {
 }
 
 export default App;
-{% endcodeblock %}
+```
 
 `search` 버튼을 클릭하면 `fetch` 함수로 서버(`http://localhost:5000/api/data`)에 요청을 하게 되고 응답값으로 콘솔창에 `{ greeting: "Hello World" }`가 출력되는 것을 확인할 수 있다.
 
@@ -210,7 +189,7 @@ export default App;
 이제 검색키워드를 서버에 보내기 위헤 `SearchForm`, `App` 컴포넌트를 아래처럼 수정해 준다.
 
 **SearchForm.tsx**
-{% codeblock lang:javascript SearchForm.tsx %}
+```javascript
 import React, { useState } from "react";
 
 const SearchForm = (props: { getData: any }) => {
@@ -248,10 +227,10 @@ const SearchForm = (props: { getData: any }) => {
 };
 
 export default SearchForm;
-{% endcodeblock %}
+```
 
 **App.tsx**
-{% codeblock lang:javascript App.tsx %}
+```javascript
 import React from "react";
 import SearchForm from "./components/SearchForm";
 import SearchList from "./components/SearchList";
@@ -276,14 +255,14 @@ function App() {
 }
 
 export default App;
-{% endcodeblock %}
+```
 
 `SearchForm`에 있던 `fetch`함수를 상위 `App`컴포넌트의 `getData` 함수에 넣어놨다. 이 함수를 `SearchForm`에 전달하였고, 검색버튼을 클릭하면 `getData`가 실행되며, `input` 태그의 검색 키워드가 쿼리스트링에 할당되어 서버에 전달되게 된다. 검색폼에서 엔터를 눌러도 요청할 수 있도록 `onKeyPress` 이벤트도 추가해 주자. 이제 응답값을 받기 위해 서버 작업을 해보자. 
 
 # 서버에서 요청 받기
 이제 루트로 가서 `index.js`를 아래처럼 수정해 준다.
 
-{% codeblock lang:javascript index.js %}
+```javascript
 // express 모듈 불러오기
 const express = require("express");
 
@@ -301,23 +280,23 @@ app.use("/api/data", function (req, res) {
 });
 
 console.log(`server running at http ${port}`);
-{% endcodeblock %}
+```
 
 요청을 하면 서버 터미널에 검색 키워드가 출력될 것이다. 위 코드를 보면 미들웨어 함수에서 요청값(`req.query.keyword`)을 받기 때문이다.
 
 # Puppeteer 설치
 이제 브라우저로 검색하기 위해 루트 디렉토리에 Puppeteer를 설치해주자.
 
-{% codeblock TERMINAL %}
+```
 $ npm install puppeteer
-{% endcodeblock %}
+```
 
 > * Puppeteer는 기본적으로 Chrome 혹은 Chromium 런더링 엔진을 사용하기 때문에 기본적으로  Chromium 브라우저를 내장하고 있다.
 > * 따로 Chromium 브라우저를 다운받지 않으려면 `$ npm install puppeteer-core` 명령어를 사용하면 되며, Puppeteer는 로컬에 있는 Chrome 혹은 Chromium을 사용하게 될 것이다.
 
 # 검색해보기
 Puppeteer를 설치했으면 이제 브라우저를 실행해 검색을 해보자. `index.js`를 아래처럼 수정해준다.
-{% codeblock lang:javascript index.js %}
+```javascript
 // express 모듈 불러오기
 const express = require("express");
 
@@ -360,7 +339,7 @@ async function openBrowser(keyword) {
   // 키워드 검색
   await page.type("input[class='gLFyf gsfi']", String.fromCharCode(13));
 }
-{% endcodeblock %}
+```
 
 `puppeteer` 모듈을 불러온 뒤 `openBrowser` 함수를 추가하였으며, 포탈 이동 및 응답값을 받기 위해 `async` 함수로 감싸주었다. 브라우저 실행 옵션에서 `headless` 모드를 `true`로 설정하면 브라우저가 화면에 노출이 되지 않고 백그라운드에서 작동된다. 지금은 브라우저 작동 순서를 보기 위해 임시로 `false`로 설정해 준다. 위처럼 수정해 준 뒤 클라이언트 화면으로 가서 검색해 보면 아래 순서대로 작동된다.
 
@@ -374,18 +353,18 @@ async function openBrowser(keyword) {
 
 ## 크롤링할 내용 형태
 
-{% codeblock lang:javascript JSON %}
+```json
 {
   title: "제목",
   link: "링크",
   text: "내용",
   kategorie: "카테고리"
 }
-{% endcodeblock %}
+```
 
 크롤링으로 가져올 정보는 위 형태로 가져올 것이며, `index.js`를 아래처럼 코드를 수정한다.
 
-{% codeblock lang:javascript index.js %}
+```javascript
 // express 모듈 불러오기
 const express = require("express");
 
@@ -485,7 +464,7 @@ async function openBrowser(keyword) {
   // 검색결과 반환
   return searchData;
 }
-{% endcodeblock %}
+```
 
 ## 요소 대기
 `headless` 모드는 이제 `true`로 설정해준다. 브라우저가 크롤링하는 모습을 직접 확인하고 싶으면 `false`로 그냥 두면 된다. 이제 순서대로 코드를 살펴보자. `page.waitForSelector` 메서드를 추가했으며, 인자로 쿼리 셀렉터와 옵션이 들어간다. 이 메서드는 셀렉터 요소가 로드될 때 까지 대기하며, `timeout`로 대기 시간을 설정할 수 있다. 대기시간이 끝나도 해당 요소를 로드하지 못하면 에러를 뱉어내며, 이 경우 `title`에 검색결과가 없다는 값을 리턴해 준다.
@@ -506,7 +485,7 @@ async function openBrowser(keyword) {
 
 아래처럼 코드를 수정한다.
 
-{% codeblock lang:javascript index.js %}
+```javascript
 // express 모듈 불러오기
 const express = require("express");
 
@@ -653,7 +632,7 @@ async function openBrowser(keyword) {
   // 모든 검색결과 반환
   return searchAllData;
 }
-{% endcodeblock %}
+```
 
 이제 추가된 코드들을 살펴보자.
 
@@ -703,7 +682,7 @@ async function crawlingData() {
 ## 출력될 컴포넌트 추가
 데이터가 들어갈 영역을 만들어주자. 우선 `/client/src/components` 디렉토리에 `SearchItem.tsx` 파일을 생성하고 아래 코드를 입력해준다.
 
-{% codeblock lang:javascript SearchItem.tsx %}
+```javascript
 import React from "react";
 
 const SearchItem = (props: { item: any }) => {
@@ -725,13 +704,13 @@ const SearchItem = (props: { item: any }) => {
 };
 
 export default SearchItem;
-{% endcodeblock %}
+```
 
 ## 컴포넌트에 데이터 전달하기
 `SearchList.tsx` 파일과 `App.tsx` 파일도 각각 아래처럼 수정해준다.
 
 **SearchList.tsx**
-{% codeblock lang:javascript SearchList.tsx %}
+```javascript
 import React from "react";
 import SearchItem from "./SearchItem";
 
@@ -748,10 +727,10 @@ const SearchList = (props: { searchData: [] }) => {
 };
 
 export default SearchList;
-{% endcodeblock %}
+```
 
 **App.tsx**
-{% codeblock lang:javascript App.tsx %}
+```javascript
 import React, { useState } from "react";
 import SearchForm from "./components/SearchForm";
 import SearchList from "./components/SearchList";
@@ -779,7 +758,7 @@ function App() {
 }
 
 export default App;
-{% endcodeblock %}
+```
 
 
 과정을 살펴보자, 서버에서 응답값이 오면 `App.tsx`의 15번째 라인에서 받고 이것을 `SearchList` 컴포넌트에 전달해 준다. `SearchList.tsx`를 보면 이 응답값을 `props`로 전달받았으며, 이 값은 배열이기 때문에 `Array.map` 메서드를 사용하여 `SearchItem` 컴포넌트를 리턴하고 있다. 이렇게 리턴받은 `SearchItem` 컴포넌트는 `SearchItem.tsx` 파일의 코드처럼, 카테고리, 제목, 본문내용, 링크를 출력하고 있는걸 확인할 수 있다.
@@ -787,7 +766,7 @@ export default App;
 ## 스타일 꾸며주기
 CSS 적용이 안되었기 때문에 실제 화면은 이상하게 보일것이다. `App.css` 파일에 간단히 스타일을 추가해 주자.
 
-{% codeblock lang:css App.css %}
+```css
 .App {
   margin: 0 auto;
   max-width: 500px;
@@ -859,7 +838,7 @@ CSS 적용이 안되었기 때문에 실제 화면은 이상하게 보일것이�
   background-color: #e5e5e5;
   color: #000;
 }
-{% endcodeblock %}
+```
 
 # 추가 화면 및 비활성 처리
 마무리 단계이며, 아래 단계가 남았다.
@@ -870,7 +849,7 @@ CSS 적용이 안되었기 때문에 실제 화면은 이상하게 보일것이�
 
 `SearchLoading.tsx` 파일을 생성하고 아래처럼 입력해 준다. 이 컴포넌트가 검색하는 동안 보여지는 부분이다.
 
-{% codeblock lang:javascript SearchLoading.tsx %}
+```javascript
 import React from "react";
 
 const SearchLoading = (props: { isOnLoading: boolean }) => {
@@ -881,12 +860,12 @@ const SearchLoading = (props: { isOnLoading: boolean }) => {
 };
 
 export default SearchLoading;
-{% endcodeblock %}
+```
 
 그리고 `SearchForm.tsx`, `SearchList.tsx`, `App.tsx`, `App.css` 파일들을 아래처럼 코드를 수정한다.
 
 **SearchForm.tsx**
-{% codeblock lang:javascript SearchForm.tsx %}
+```javascript
 import React, { useState } from "react";
 
 const SearchForm = (props: { getData: any; isOnLoading: boolean }) => {
@@ -926,10 +905,10 @@ const SearchForm = (props: { getData: any; isOnLoading: boolean }) => {
 };
 
 export default SearchForm;
-{% endcodeblock %}
+```
 
 **SearchList.tsx**
-{% codeblock lang:javascript SearchList.tsx %}
+```javascript
 import React from "react";
 import SearchItem from "./SearchItem";
 
@@ -954,10 +933,10 @@ const SearchList = (props: { searchData: []; isOnLoading: boolean }) => {
   );
 };
 export default SearchList;
-{% endcodeblock %}
+```
 
 **App.tsx**
-{% codeblock lang:javascript App.tsx %}
+```javascript
 import React, { useState } from "react";
 import SearchForm from "./components/SearchForm";
 import SearchLoading from "./components/SearchLoading";
@@ -990,10 +969,10 @@ function App() {
 }
 
 export default App;
-{% endcodeblock %}
+```
 
 **App.css**
-{% codeblock lang:css App.css %}
+```css
 .App {
   margin: 0 auto;
   max-width: 500px;
@@ -1089,7 +1068,7 @@ export default App;
   font-size: 13px;
   height: 20px;
 }
-{% endcodeblock %}
+```
 
 ## 검색 시작 및 끝을 나타내는 값
 ### 컴포넌트에 검색중 여부 전달
@@ -1110,14 +1089,14 @@ export default App;
 ### 정적 파일 생성
 `client` 디렉토리에서 아래 명령어를 입력해 배포용 정적 파일을 생성한다.
 
-{% codeblock TERMINAL %}
+```
 $ npm run build
-{% endcodeblock %}
+```
 
 ### 정적 파일 경로 설정
 다음에 `index.js` 파일 최하단에 아래 코드를 추가해준다.
 
-{% codeblock lang:javascript index.js %}
+```javascript
 // ... 기존 코드
 
 // path 모듈 불러오기
@@ -1130,12 +1109,12 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
-{% endcodeblock %}
+```
 
 ### 헤로쿠 빌드 명령어 설정
 루트경로의 `package.json` 파일로 가서 `heroku-postbuild`를 아래처럼 추가해준다.
 
-{% codeblock lang:javascript package.json %}
+```json
 "scripts": {
   "start": "nodemon index.js",
   "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
@@ -1143,7 +1122,7 @@ app.get('*', (req, res) => {
   "dev:client": "cd client && npm start",
   "heroku-postbuild": "cd client && npm install && npm run build"
 }
-{% endcodeblock %}
+```
 
 ## 헤로쿠 연동하기
 헤로쿠에 대한 간략한 설명은 [이 포스팅]https://recordboy.github.io/2020/11/05/express-react-heroku-init/)을 참고하면 된다. 기존에 회원이 아니면 [헤로쿠 홈페이지](https://heroku.com)에서 회원가입을 하고 [이곳에서](https://devcenter.heroku.com/articles/heroku-cli) 헤로쿠 CLI를 설치하면 된다.
@@ -1151,30 +1130,30 @@ app.get('*', (req, res) => {
 ### 로그인 및 프로젝트 생성
 아래 명령어를 입력하고 아무키나 입력하면 로그인 하라는 브라우저가 뜨고 로그인을 해주자.
 
-{% codeblock TERMINAL %}
+```
 $ heroku login
-{% endcodeblock %}
+```
 
 아래 명령어로 헤로쿠에 프로젝트를 생성하며 프로젝트 이름은 다른 프로젝트와 중복되지 않게 정한다. `git remote -v` 명령어로 저장소가 제대로 연결되었는지 확인한다.
 
-{% codeblock TERMINAL %}
+```
 $ heroku create 프로젝트이름
 $ git remote -v
-{% endcodeblock %}
+```
 
 > 헤로쿠 프로젝트 주소와 로컬에서 바라보는 주소가 다를경우 `$ git remote set-url heroku 프로젝트주소` 명령어를 사용하여 동일하게 맞춰주면 된다.
 
 ### 빌드팩 추가
 한가지 또 추가해줘야 하는 것이 있는데 Puppeteer를 헤로쿠에서 사용하려면 프로젝트에 빌드팩을 추가해줘야 한다. 아래 명령어를 입력해주자.
 
-{% codeblock TERMINAL %}
+```
 $ heroku buildpacks:clear
 $ heroku buildpacks:add --index 1 https://github.com/jontewks/puppeteer-heroku-buildpack
 $ heroku buildpacks:add --index 1 heroku/nodejs
-{% endcodeblock %}
+```
 
 그리고 `index.js` 파일로 가서 34번째 라인의 브라우저 실행 옵션에 `args`값을 아래처럼 추가해 준다.
-{% codeblock lang:javascript index.js %}
+```javascript
 // 브라우저 실행 및 옵션, 현재 옵션은 headless 모드 사용 여부
 const browser = await puppeteer.launch({ 
   headless: true,
@@ -1184,16 +1163,16 @@ const browser = await puppeteer.launch({
     "--window-size=1600,2000",
   ]
 });
-{% endcodeblock %}
+```
 
 ## 업로드
 이제 배포를 위한 모든 준비가 끝났다. 깃 명령어를 입력하여 푸쉬해주자.
 
-{% codeblock TERMINAL %}
+```
 $ git add .
 $ git commit -m '커밋 메세지'
 $ git push heroku master
-{% endcodeblock %}
+```
 
 이제 배포된 페이지를 확인해 보자. url은 `https://프로젝트이름.herokuapp.com/`로 가면 확인할 수 있다. 정상적으로 배포된 페이지를 화인할 수 있다.
 

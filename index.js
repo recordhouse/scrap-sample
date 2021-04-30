@@ -8,19 +8,8 @@ const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port);
 
-/////////////////////////////////////////////////////////////////
-// 배포 전용 추가 코드
 // path 모듈 불러오기
 const path = require('path');
-
-// 리액트 정적 파일 제공
-app.use(express.static(path.join(__dirname, 'client/build')));
-
-// 라우트 설정
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname+'/client/build/index.html'));
-});
-/////////////////////////////////////////////////////////////////
 
 // 미들웨어 함수를 특정 경로에 등록
 app.use("/api/data", async function (req, res) {
@@ -165,3 +154,11 @@ async function openBrowser(keyword) {
   // 모든 검색결과 반환
   return searchAllData;
 }
+
+// 리액트 정적 파일 제공
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// 라우트 설정
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
+});

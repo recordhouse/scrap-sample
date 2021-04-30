@@ -8,9 +8,6 @@ const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port);
 
-// path 모듈 불러오기
-const path = require('path');
-
 // 미들웨어 함수를 특정 경로에 등록
 app.use("/api/data", async function (req, res) {
   console.log("검색 키워드: " + req.query.keyword);
@@ -154,6 +151,9 @@ async function openBrowser(keyword) {
   // 모든 검색결과 반환
   return searchAllData;
 }
+
+// path 모듈 불러오기
+const path = require('path');
 
 // 리액트 정적 파일 제공
 app.use(express.static(path.join(__dirname, 'client/build')));

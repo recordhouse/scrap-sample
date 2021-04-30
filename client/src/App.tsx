@@ -10,12 +10,7 @@ function App() {
   const getData = (keyword: string) => {
     setIsOnLoading(true);
     console.log("검색 키워드: " + keyword);
-    fetch(`api/data?keyword=${keyword}`, {
-      headers : { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-       }
-      })
+    fetch(`api/data?keyword=${keyword}`)
       .then((res) => {
         return res.json();
       })

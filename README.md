@@ -1,26 +1,19 @@
-이번 포스팅에서는 Puppeteer를 활용해 구글의 검색결과를 크롤링 하는 웹페이지를 만들어 보겠다. 클라이언트는 React, 서버는 Express를 사용할것이다. 로컬에서 작업이 끝나면 Heroku에 배포까지 해보자.
+이번에는 Puppeteer를 활용하여 웹 크롤러를 만들어 보겠다. 클라이언트는 React, 서버는 Express를 사용하고 로컬에서 작업이 끝나면 Heroku에 배포까지 해보자. 결과물과 소스는 아래에서 확인할 수 있다.
+
+* 결과물: [https://recordboy-scrap-sample.herokuapp.com](https://recordboy-scrap-sample.herokuapp.com/)
+* 소스: [https://github.com/recordboy/scrap-sample](https://github.com/recordboy/scrap-sample)
+
+> 결과물은 헤로쿠에 배포되었기 때문에 처음 페이지가 열릴때 로딩시간이 10초에서 30초정도 걸릴수 있다.
 
 # Puppeteer
-Puppeteer는 Google Chrome 개발팀에서 직접 개발한 Chrome(혹은 Chromium) 렌더링 엔진을 이용하는 node.js 라이브러리이다. Puppeteer는 headless 모드를 지원하며, 이는 브라우저를 띄우지 않고 렌더링 작업을 가상으로 진행하고 실제 브라우저와 동일하게 동작한다.
-
-## 기능
-Puppeteer는 다양한 기능을 가지고 있으며 아래와 같은 기능들이 있다.
+Puppeteer는 Google Chrome 개발팀에서 직접 개발한 Chrome(혹은 Chromium) 렌더링 엔진을 이용하는 node.js 라이브러리이다. Puppeteer는 headless 모드를 지원하며, 이는 브라우저를 띄우지 않고 렌더링 작업을 가상으로 진행하고 실제 브라우저와 동일하게 동작한다. Puppeteer는 다양한 기능을 가지고 있으며 아래와 같은 기능들이 있다.
 
 * 웹페이지의 스크린샷과 PDF를 생성한다.
 * SPA(단일 페이지)를 크롤링하고 미리 렌더링된 콘텐츠(예: SSR)를 생성한다.
 * 폼 입력, UI 테스트, 키보드 입력 등을 자동화 할 수 있다.
 * 최신 자바스크립트 및 브라우저 기능을 이용해 최신버전의 크롬에서 직접 테스트할 수 있다.
-* 사이트의 timeline trace를 기록하여 성능이나 문제를 진단할 수 있다.
+* 사이트의 Timeline Trace를 기록하여 성능이나 문제를 진단할 수 있다.
 * 크롬 확장 프로그램을 테스트 할 수 있다.
-
-이번에는 심플한 검색 화면을 만들것이며, 검색을 하게 되면 내부에선 Puppeteer로 구글로 이동해서 검색 결과를 각 페이지마다 크롤링해서 화면에 보여주는 기능을 
-
-## 결과물 미리보기
-### [https://recordboy-scrap-sample.herokuapp.com/](https://recordboy-scrap-sample.herokuapp.com/)
-
-결과물은 위 링크에서 확인할 수 있다. 검색창에 키워드를 입력해 검색버튼을 누르면 내부에선 요청값을 서버로 보내고 서버에선 Puppeteer로 구글로 이동해서 검색 결과를 각 페이지마다 크롤링해서 클라이언트로 보내 화면에 출력하게 된다. 깃 저장소는 [https://github.com/recordboy/scrap-sample](https://github.com/recordboy/scrap-sample)에서 확인할 수 있다.
-
-> 위 사이트는 헤로쿠에 배포되었기 때문에 처음 사이트가 열릴때 로딩시간이 10초에서 30초정도  있다.
 
 # 프로젝트 초기화
 이 부분은 [[Express] Express + React 연동 및 Heroku에 배포하기](https://recordboy.github.io/2020/11/05/express-react-heroku-init/) 포스팅과 비슷한 부분이 많기 때문에 각 단계의 추가 설명 없이 진행하도록 하겠다.

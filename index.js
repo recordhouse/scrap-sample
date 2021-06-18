@@ -120,7 +120,7 @@ async function openBrowser(keyword) {
         if (item.className === "g") {
           const title = item.querySelector("h3");
           const link = item.querySelector(".yuRUbf");
-          const text = item.querySelector(".aCOpRe");
+          const text = item.querySelector(".VwiC3b");
           const kategorie = item.querySelector(".iUh30 ");
 
           if (title && link && text && kategorie) {
